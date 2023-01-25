@@ -58,9 +58,19 @@ class Node:
         if self.right:
             ls = ls + self.right.treeAsList()
         return ls
+    def getChildren(self, root):
+        if not root:
+            return None
+        left = None
+        right = None
+        if root.left:
+            left = root.left.data
+        if root.right:
+            right = root.right.data
+        return [left,right]
 
 #Create Tree
-entries = [99,200,1,5,54,30,.1]
+entries = [6,4,2,1,3,5,7]
 initial = True
 root = None
 for e in entries:
@@ -81,3 +91,7 @@ print("\nTraversal: ")
 print(root.preOrderTraversal(root))
 print(root.inOrderTraversal(root))
 print(root.postOrderTraversal(root))
+
+print("\nChildren")
+print("Children of " + str(root.data), root.getChildren(root))
+print("Children of " + str(root.right.data), root.getChildren(root.right))
