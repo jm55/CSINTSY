@@ -41,7 +41,7 @@ class grid:
 
     #Build the grid data be forming the basic 
     def create_grid(self, raw_data):
-        raw_data = ['G....', '.####', '...#S', '.#.#.', '.#...'] #Temporary copy
+        raw_data = ['....G', '.####', '...#S', '.#.#.', '.#...'] #Temporary copy
         tiles = []
 
         if type(raw_data) != list:
@@ -57,9 +57,31 @@ class grid:
         
         return tiles
 
+    #Returns list of bot's neighbors
+    #Excludes neighbors that are invalid (exceeds grid limits) or is a wall
+    def neighbor_bot(self):
+        x = self.locate_bot()[0]
+        y = self.locate_bot()[1]
+        traversable = [[x,y-1],[x-1,y],[x,y+1],[x+1,y]]
+        for s in range(len(traversable)):
+            if traversable[s][0] < 0 or traversable[s][0] >= self.get_size() or traversable[s][1] < 0 or traversable[s][1] >= self.get_size():
+                traversable[s] = None
+            if traversable[s] != None:
+                if self.get_tiles()[traversable[s][1]][traversable[s][0]].isWall():
+                    traversable[s] = None
+        return traversable
+    
+    #@TODO
+    def check_if_goal(self):
+        '''
+        Check if the grid is already a goal or not.
+        Search for SB or if locate_bot() == locate_g() 
+        '''
+        return None
+
     #Update position of 'bot'; Assumes that landing location is allowed/valid
     #Note that this is just the representation of the bot on the grid. The logic behind the bot's state selection is still different from here.
-    #Every call of the update bot representats change in the g_cost/move count.
+    #Every call of the update bot represents change in the g_cost/move count.
     def update_bot(self, x:int,y:int):
         b_loc = self.locate_bot()
         s_loc = self.locate_s()
@@ -129,13 +151,17 @@ class grid:
     def chk(self): #To check if the script/class imports correctly.
         print("This is grid.py") 
     
-    def test_print(self, cost:int):
+    def test_print(self):
+        utils.cls()
         size = len(self.tiles)
+        utils.bar(size*4)
+        print("Costs: ", self.get_costs())
+        print("Valid Moves: ", self.neighbor_bot())
         utils.bar(size*4)
         for y in range(size):
             row = ""
             for x in range(size):
                 tile = self.tiles[y][x].get_attributes()
-                row = row + tile[0] + "/" + str(tile[cost]) + " "
+                row = row + tile[0] + " "
             print(row)
         utils.bar(size*4)

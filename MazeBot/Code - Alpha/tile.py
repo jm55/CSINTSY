@@ -16,6 +16,12 @@ class tile:
 
     def isBot(self):
         return 'B' in self.type
+    
+    def isWall(self):
+        return '#' in self.type
+
+    def isSpace(self):
+        return '.' in self.type
 
     def get_coor(self):
         return self.x, self.y
