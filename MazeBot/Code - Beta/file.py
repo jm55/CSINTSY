@@ -5,8 +5,11 @@ import utils
 
 def readfile(filename):
     data = [] #Returns content of file as string
-    if os.stat(filename).st_size==0:
-            utils.terminate("Empty file!",0)
+    if not os.path.isfile(filename):
+        utils.terminate("File (" + filename + ") non existent!",0)
+    elif os.path.getsize(filename) <= 0:
+        utils.terminate("File (" + filename + ") is empty!", 0)
+
     with open(filename, encoding='utf-8') as file:
         for line in file:
             data.append(line.strip())
