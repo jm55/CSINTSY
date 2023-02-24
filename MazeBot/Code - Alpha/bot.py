@@ -22,11 +22,10 @@ class bot:
             if self.frontier[o].f_cost < lowest:
                 lowest = self.frontier[o].f_cost
                 idx = o
-
         return self.frontier[idx] #Return grid item w/ lowest f
 
     #Based from SebLague's AStar Pseudocode
-    def a_star(self):
+    def a_star(self, cont:bool=True, fast_search:bool=False):
         self.frontier.append(self.initial_grid) #Start frontier with initial_grid/state
 
         while True:
@@ -35,33 +34,36 @@ class bot:
             self.explored.append(ongoing) #Add ongoing to closed
 
             #Check if goal
-            if ongoing.check_if_goal():
-                #Do a final replay
-                gui.replay(self.frontier, self.explored, False)
-                utils.cls()
+            if ongoing != None:
+                if ongoing.check_if_goal():
+                    #Do a final replay
+                    utils.cls()
+                    gui.replay(self.frontier, self.explored, False, False)
 
-                #Display final state
-                gui.main(ongoing)
+                    #Display final state
+                    utils.cls()
+                    gui.main(ongoing)
 
-                #Notify user for Goal has been reached.
-                print("\nGOAL REACHED!")
-                
-                #Return to driver
-                input("Press any to key to proceed to complete replay...")
+                    #Notify user for Goal has been reached.
+                    print("\nGOAL REACHED!")
+                    
+                    #Return to driver
+                    input("Press any to key to proceed to exit search...")
+                    break
+
+                #Check for adjacent tiles of the ongoing bot
+                for adjacent in ongoing.bot_adjacent(): 
+                    if adjacent == None: #Skip if cannot move on adjacent
+                        continue
+                    new_grid = self.new_grid(ongoing, adjacent[0], adjacent[1]) #Create a new grid for the adjacent
+                    if new_grid != None or self.find_in_frontier(new_grid) == -1: #Skips the out of bounds and walls
+                        if self.find_in_explored(new_grid) == -1: #Check if not a duplicate
+                            if new_grid.f_cost < ongoing.f_cost or self.find_in_frontier(new_grid) == -1: #Check if cost of adjacent is less or not in frontier
+                                self.frontier.append(new_grid)   
+                #Conduct replay on how move turned out    
+                gui.replay(self.frontier, self.explored, cont, fast_search)
+            else:
                 break
-
-            #Check for adjacent tiles of the ongoing bot
-            for adjacent in ongoing.bot_adjacent(): 
-                if adjacent == None: #Skip if cannot move on adjacent
-                    continue
-                new_grid = self.new_grid(ongoing, adjacent[0], adjacent[1]) #Create a new grid for the adjacent
-                if new_grid != None or self.find_in_frontier(new_grid) == -1: #Skips the out of bounds and walls
-                    if self.find_in_explored(new_grid) == -1: #Check if not a duplicate
-                        if new_grid.f_cost < ongoing.f_cost or self.find_in_frontier(new_grid) == -1: #Check if cost of adjacent is less or not in frontier
-                            self.frontier.append(new_grid)   
-
-            #Conduct replay on how move turned out                         
-            gui.replay(self.frontier, self.explored)
     
     #Remove a given grid from explored list
     def remove_ongoing_explored(self, ongoing:grid):

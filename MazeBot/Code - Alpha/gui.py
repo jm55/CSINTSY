@@ -2,6 +2,16 @@ from grid import grid
 import utilities as utils
 import time
 
+def ask_performance():
+    cont = True
+    fast_search = False
+    print(utils.header())
+    if input("Manual Control (Y/N): ").lower() == 'n':
+        cont = False
+    if input("Fast Search (Y/N): ").lower() == 'y':
+        fast_search = True
+    return cont, fast_search
+
 #Prints the major components of a grid printout
 def main(grid:grid):
     utils.cls()
@@ -25,15 +35,22 @@ def get_grid_list(items:list):
 
 #Conduct a replay from using the frontier and explored list.
 #Parameter cont if to display the "Press Enter key to continue..." input
-def replay(frontier:list, explored:list, cont:bool=True):
-    utils.cls()
-    for c in explored:
-        main(c)
-        print("Bot's Frontier: ", get_grid_list(frontier))
-        print("Bot's Explored: ", get_grid_list(explored))
-        time.sleep(0.25)
-    if cont:
-        input("\n\nPress Enter key to continue...")
+def replay(frontier:list, explored:list, cont:bool=True, fast_search:bool=False):
+    if len(frontier) == 0 or len(explored) == 0:
+        utils.cls()
+        print(utils.header())
+        print("No path found for given maze!")
+        return False
+    elif not fast_search: 
+        utils.cls()
+        for c in explored:
+            main(c)
+            print("Bot's Frontier: ", get_grid_list(frontier))
+            print("Bot's Explored: ", get_grid_list(explored))
+            time.sleep(0.1)
+        if cont:
+            input("\n\nPress Enter key to continue...")
+        return True
 
 #Asks the user for filepath of maze file
 def ask_filepath():
