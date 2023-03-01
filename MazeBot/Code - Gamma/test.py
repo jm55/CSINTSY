@@ -34,18 +34,15 @@ ctr = 0
 header()
 laps = int(input("Enter laps: "))
 
-print("Searching...")
 for l in range(laps):
     for test in range(len(test_files)):
         t = test_files[test]
         print_results(results,None,l+1)
+        
         print("Running " + t[0] + "...")
         grid = utils.read_maze("mazes\\" + t[0])
-
-        #inject bot at grid
         bot_loc = grid.locate_s()
         grid.tiles[bot_loc[0]][bot_loc[1]].type = 'SB'
-
         start = time.time()
         path = astar.astar(grid, rapid_search, manual_cont, True)[0]
         end = time.time()
