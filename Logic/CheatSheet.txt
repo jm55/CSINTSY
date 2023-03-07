@@ -1,0 +1,4 @@
+working_directory(_, 'd:/users/ejose/documents/github/csintsy/logic').
+[kb].
+
+cls :- write('\33\[2J')
