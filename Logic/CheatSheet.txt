@@ -1,4 +1,4 @@
-working_directory(_, 'd:/users/ejose/documents/github/csintsy/logic').
+working_directory(_, 'd:/users/ejose/documents/github/csintsy-mco-5/chatbot').
 [kb].
 
 cls :- write('\33\[2J')
